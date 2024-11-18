@@ -118,10 +118,10 @@ int** splitV(int** G, int size, int V) {
     G = NULL;
     return Gtemp;
 }
-int** unionGraphs(int** G1, int** G2, int size) {
-    int** result = (int**)malloc(size * sizeof(int*));
+int** unionGraphs(int** G1, int** G2, int size, int size1) {
+    int** result = (int**)malloc(size1 * sizeof(int*));
     for (int i = 0; i < size; i++) {
-        result[i] = (int*)malloc(size * sizeof(int));
+        result[i] = (int*)malloc(size1 * sizeof(int));
         for (int j = 0; j < size; j++) {
             result[i][j] = G1[i][j] || G2[i][j]; // Объединение
         }
@@ -129,10 +129,10 @@ int** unionGraphs(int** G1, int** G2, int size) {
     return result;
 }
 
-int** intersectionGraphs(int** G1, int** G2, int size) {
-    int** result = (int**)malloc(size * sizeof(int*));
+int** intersectionGraphs(int** G1, int** G2, int size, int size1) {
+    int** result = (int**)malloc(size1 * sizeof(int*));
     for (int i = 0; i < size; i++) {
-        result[i] = (int*)malloc(size * sizeof(int));
+        result[i] = (int*)malloc(size1 * sizeof(int));
         for (int j = 0; j < size; j++) {
             result[i][j] = G1[i][j] && G2[i][j]; // Пересечение
         }
@@ -140,10 +140,10 @@ int** intersectionGraphs(int** G1, int** G2, int size) {
     return result;
 }
 
-int** ringSumGraphs(int** G1, int** G2, int size) {
-    int** result = (int**)malloc(size * sizeof(int*));
+int** ringSumGraphs(int** G1, int** G2, int size, int size1) {
+    int** result = (int**)malloc(size1 * sizeof(int*));
     for (int i = 0; i < size; i++) {
-        result[i] = (int*)malloc(size * sizeof(int));
+        result[i] = (int*)malloc(size1 * sizeof(int));
         for (int j = 0; j < size; j++) {
             result[i][j] = (G1[i][j] + G2[i][j]) % 2; // Кольцевая сумма
         }
@@ -153,34 +153,36 @@ int** ringSumGraphs(int** G1, int** G2, int size) {
 int main()
 {
     setlocale(LC_ALL, "Rus");
-    int r, v1, v2;
-    printf("Введите размер матриц \n");
+    int r, r2, v1, v2;
+    printf("Введите размер матрицы 1\n");
     scanf_s("%d", &r);
+    printf("Введите размер матрицы 2\n");
+    scanf_s("%d", &r2);
     int** G1 = createG(r);
-    int** G2 = createG(r);
-    int** G3 = createG(r);
-    for (int i = 0; i < r; i++) {
-        for (int j = 0; j < r; j++) {
+    int** G2 = createG(r2);
+    int** G3 = createG(r2);
+    for (int i = 0; i < r2; i++) {
+        for (int j = 0; j < r2; j++) {
             G3[i][j] = G2[i][j];
         }
     }
-    int** G4 = createG(r);
-        for (int i = 0; i < r; i++) {
-            for (int j = 0; j < r; j++) {
-                G4[i][j] = G2[i][j];
-            }
+    int** G4 = createG(r2);
+    for (int i = 0; i < r2; i++) {
+        for (int j = 0; j < r2; j++) {
+            G4[i][j] = G2[i][j];
         }
-    int** G5 = createG(r);
-    for (int i = 0; i < r; i++) {
-        for (int j = 0; j < r; j++) {
+    }
+    int** G5 = createG(r2);
+    for (int i = 0; i < r2; i++) {
+        for (int j = 0; j < r2; j++) {
             G5[i][j] = G2[i][j];
         }
     };
     //дописать
-    int** unionResult = unionGraphs(G1, G2, r);
-    int** intersectionResult = intersectionGraphs(G1, G2, r);
-    int** ringSumResult = ringSumGraphs(G1, G2, r);
-    int N=1;
+    int** unionResult = unionGraphs(G1, G2, r, r2);
+    int** intersectionResult = intersectionGraphs(G1, G2, r,r2);
+    int** ringSumResult = ringSumGraphs(G1, G2, r, r2);
+    int N = 1;
     while (N != 0) {
         printf("0.Выход\n");
         printf("1.Вывод в виде матриц смежности\n");
@@ -200,44 +202,44 @@ int main()
             printf("Матрица 1\n");
             printG(G1, r);
             printf("Матрица 2\n");
-            printG(G2, r);
+            printG(G2, r2);
             break;
         case 2://вывод список
             printf("Матрица 1\n");
             listing(G1, r);
             printf("Матрица 2\n");
-            listing(G2, r);
+            listing(G2, r2);
             break;
         case 3://стягивание
             printf("Введите вершины v1 v2\n");
             scanf_s("%d %d", &v1, &v2);
-            G4 = contrE(G4, r - 1, v1, v2);
-            printG(G4, r - 1);
+            G4 = contrE(G4, r2 - 1, v1, v2);
+            printG(G4, r2 - 1);
             break;
         case 4://расщепление
             printf("Введите вершины v1\n");
             scanf_s("%d", &v1);
-            G5 = splitV(G5, r + 1, v1);
-            printG(G5, r + 1);
+            G5 = splitV(G5, r2+ 1, v1);
+            printG(G5, r2 + 1);
             break;
         case 5://отождествление
             printf("Введите вершины v1 v2\n");
             scanf_s("%d %d", &v1, &v2);
-            G3 = unionV(G3, r - 1, v1, v2);
-            printG(G3, r - 1);
+            G3 = unionV(G3, r2 - 1, v1, v2);
+            printG(G3, r2 - 1);
             break;
         case 6://объединение-элемент равен 1, если хотя бы один из графов имеет ребро между соответствующими вершинами.
-            printG(unionResult, r);
+            printG(unionResult, r2);
             break;
         case 7://пересечение-элемент равен 1, только если оба графа имеют ребро между соответствующими вершинами
-            printG(intersectionResult, r);
+            printG(intersectionResult, r2);
             break;
         case 8://кольцевая сумма-элемент равен 1, если сумма значений в соответствующих ячейках двух графов нечетная
-            printG(ringSumResult, r);
+            printG(ringSumResult, r2);
             break;
         default:
             printf("Неправильный выбор\n");
         }
-    }  
+    }
     return 0;
 }
